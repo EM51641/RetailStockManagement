@@ -1,5 +1,8 @@
-import { AdminRole } from "../Models/User";
+import { assert } from "console";
 import { DomainBase } from "./Base";
+import bcrypt from "bcrypt";
+
+const SALT = 10;
 
 export class Company extends DomainBase {
   constructor(
@@ -20,23 +23,24 @@ export class User extends DomainBase {
     private _firstName: string,
     private _lastName: string,
     private _is_active: boolean,
+    private _is_admin: boolean,
     private _created_at: Date,
     private _company_id: string,
-    private _email?: string,
+    private _email: string,
     private _password?: string,
   ) {
     super(uid);
   }
 
-  get firstName() {
+  get first_name() {
     return this._firstName;
   }
 
-  get lastName() {
+  get last_name() {
     return this._lastName;
   }
 
-  get isActive() {
+  get is_active() {
     return this._is_active;
   }
 
@@ -52,57 +56,32 @@ export class User extends DomainBase {
     return this._password;
   }
 
+  get is_admin() {
+    return this._is_admin;
+  }
+
   get company_id() {
     return this._company_id;
   }
 
-  SetEmail(value: string) {
+  set_email(value: string) {
     // We can pass the value through
     // a validation object
     this._email = value;
   }
 
-  SetPassword(value: string) {
+  async set_password(value: string) {
     // We should encrypt this using a salt
-    this._password = value;
+
+    const hash = await bcrypt.hash(value, SALT);
+    this._password = hash;
   }
 
-  VerifyPassword(value: string) {
-    if (this._password === value) {
-      return true;
+  check_password(value: string) {
+    if (!this._password) {
+      throw new Error("No Password Exists");
     }
-    return false;
-  }
-}
-
-export class Admin extends DomainBase {
-  private _user_id: string;
-  private _role: AdminRole;
-
-  constructor(uid: string, user_id: string, role: AdminRole) {
-    super(uid);
-    this._user_id = user_id;
-    this._role = role;
-  }
-
-  get user_id() {
-    return this._user_id;
-  }
-
-  get role() {
-    return this._role;
-  }
-}
-
-export class Customer extends DomainBase {
-  private _user_id: string;
-
-  constructor(id: string, user_id: string) {
-    super(id);
-    this._user_id = user_id;
-  }
-
-  get user_id() {
-    return this._user_id;
+    const valid_password = bcrypt.compare(value, this._password);
+    return valid_password;
   }
 }

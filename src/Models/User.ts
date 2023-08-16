@@ -21,6 +21,9 @@ export class UserEntity extends EntityBase {
   @Column({ type: "boolean" })
   is_active: boolean;
 
+  @Column({ type: "boolean" })
+  is_admin: boolean;
+
   @Column({ type: "date" })
   created_at: Date;
 
@@ -35,37 +38,4 @@ export class UserEntity extends EntityBase {
   private company: never;
 
   plans: any;
-}
-
-export enum AdminRole {
-  // We can add a number of roles here.
-  SUPER = 1,
-  EDITOR = 2,
-  STANDARD_OPS = 3,
-}
-
-@Entity()
-export class AdminEntity extends EntityBase {
-  @Column({
-    type: "enum",
-    enum: AdminRole,
-  })
-  role: AdminRole;
-
-  @Column({ type: "uuid" })
-  user_id: string;
-
-  @OneToOne(() => UserEntity, { cascade: true })
-  @JoinColumn({ name: "user_id" })
-  private user: never;
-}
-
-@Entity()
-export class CustomerEntity extends EntityBase {
-  @Column({ type: "uuid" })
-  user_id: string;
-
-  @OneToOne(() => UserEntity, { cascade: true })
-  @JoinColumn({ name: "user_id" })
-  private user: never;
 }

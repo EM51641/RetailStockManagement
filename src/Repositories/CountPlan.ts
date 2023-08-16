@@ -1,5 +1,4 @@
 import {
-  Plan,
   CountPlan,
   CountExecution,
   CountSubProduct,
@@ -7,9 +6,7 @@ import {
 import { CountExecutionMapper } from "../helpers/Mappers/CountExecution";
 import { CountPlanMapper } from "../helpers/Mappers/CountPlan";
 import { CountSubProductMapper } from "../helpers/Mappers/CountSubproduct";
-import { PlanMapper } from "../helpers/Mappers/Plan";
 import {
-  PlanEntity,
   CountPlanEntity,
   CountExecutionEntity,
   CountSubProductEntity,
@@ -17,20 +14,9 @@ import {
 import { SessionManager } from "../Session/Session";
 import { BaseRepository } from "./Base";
 
-interface PlanRepositoryInterface {}
 interface UserPlanRepositoryInterface {}
 interface CountExecutionRepositoryInterface {}
 interface ICountSubproductRepository {}
-
-export class PlanRepository
-  extends BaseRepository<PlanEntity, Plan>
-  implements PlanRepositoryInterface
-{
-  constructor(session: SessionManager) {
-    const plan_mapper = new PlanMapper();
-    super(session, PlanEntity, plan_mapper);
-  }
-}
 
 export class CountPlanRepository
   extends BaseRepository<CountPlanEntity, CountPlan>

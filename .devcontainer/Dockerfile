@@ -14,7 +14,7 @@ RUN ./squashfs-root/AppRun --version
 
 RUN ln -s /squashfs-root/AppRun /usr/bin/nvim
 
-COPY .config/nvim /root/.config
+COPY ~/.config/nvim /root/.config
 
 COPY ~/.ssh /root
 
