@@ -14,7 +14,11 @@ RUN ./squashfs-root/AppRun --version
 
 RUN ln -s /squashfs-root/AppRun /usr/bin/nvim
 
+COPY ~/.config/nvim /root/.config
+
 COPY package.json .
+
+COPY ~/.ssh /root/.ssh
 
 RUN npm install
 
