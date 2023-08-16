@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+
+    volumes:
+      - ..:/workspaces:cached
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Restart if stopped
+    restart: unless-stopped
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    networks:
+      - prod-main
+      - dev-main
+
+    depends_on:
+      - db
+      - db-test
+
+  db:
+    image: mysql:latest
+    restart: unless-stopped
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    environment:
+      MYSQL_USER: Zupan
+      MYSQL_ROOT_PASSWORD: Zupan
+      MYSQL_DATABASE: Zupan
+
+    ports:
+      - "3308:3306"
+
+    networks:
+      - prod-main
+
+  db-test:
+    image: mysql:latest
+    restart: unless-stopped
+
+    environment:
+      MYSQL_USER: test
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+
+    ports:
+      - "3309:3306"
+
+    networks:
+      - dev-main
+
+  dbeaver:
+    image: dbeaver/cloudbeaver:latest
+    restart: unless-stopped
+
+    volumes:
+      - ./dbeaver_data:/var/lib/dbeaver
+
+    ports:
+      - "8080:8978"
+
+    depends_on:
+        - db
+        - db-test
+
+    networks:
+      - dev-main
+      - prod-main
+
+networks:
+  dev-main:
+    name: dev_network
+
+  prod-main:
+    name: prod_network
+
+volumes:
+  mysql-data:
