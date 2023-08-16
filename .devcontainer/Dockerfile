@@ -14,11 +14,11 @@ RUN ./squashfs-root/AppRun --version
 
 RUN ln -s /squashfs-root/AppRun /usr/bin/nvim
 
-COPY ~/.config/nvim /root/.config
+COPY .config/nvim /root/.config
+
+COPY ~/.ssh /root
 
 COPY package.json .
-
-COPY ~/.ssh /root/.ssh
 
 RUN npm install
 
@@ -30,6 +30,8 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
     -p ssh-agent \
     -p https://github.com/zsh-users/zsh-autosuggestions \
     -p https://github.com/zsh-users/zsh-completions
+
+RUN git config --global alias.ignore '!gi() { IFS=","; curl -L -s "https://www.toptal.com/developers/gitignore/api/$*" | tee .gitignore;}; gi'
 
 SHELL ["/bin/zsh", "-c"]
 
